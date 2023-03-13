@@ -1,7 +1,7 @@
 import sympy as sym
 
 
-def main():
+def solve_utility_max():
     global utility_func, budget_line, lagrange_func
     x, y = sym.symbols("x y")
 
@@ -18,7 +18,17 @@ def main():
     y_value = find_y(budget_in_y)
     x_value = find_x(x_in_terms_of_y, y_value)
 
-    print_solution(partial_derivs, x_in_terms_of_y, budget_in_y, y_value, x_value)
+    printable_steps = {
+        "partial_derivs": partial_derivs,
+        "x_in_terms_of_y": x_in_terms_of_y,
+        "budget_in_y": budget_in_y,
+        "y_value": y_value,
+        "x_value": x_value
+    }
+
+    solution_text = get_solution_as_string(printable_steps)
+    print(get_solution_as_string(printable_steps))
+    return solution_text
 
 
 def find_budget_eq_in_terms_of_y(x_in_terms_of_y):
@@ -71,33 +81,35 @@ def find_x(x_in_terms_of_y, y_value):
     return x_in_terms_of_y.replace(y, y_value)
 
 
-def print_solution(partial_derivs, x_in_terms_of_y, budget_in_y, y_value, x_value):
-    print(f"""
-    Utility function = {utility_func}
-    budget constraint = {budget_line}
-
-    lagrange = {lagrange_func}
-
-    First order derivatives:
-    ∂l/∂x = {partial_derivs["dx"]}
-    ∂l/∂y = {partial_derivs["dy"]}
-    ∂l/∂λ = {partial_derivs["dl"]}
-
-
-    Budget Line: {budget_line} = 0   # plug x into budget
+def get_solution_as_string(steps):
+    partial_derivs = steps["partial_derivs"]
+    return (
+        f"""
+    Utility function = {utility_func}  
+    budget constraint = {budget_line} 
+ 
+    lagrange = {lagrange_func} 
+ 
+    First order derivatives: 
+    ∂l/∂x = {partial_derivs['dx']} 
+    ∂l/∂y = {partial_derivs['dy']} 
+    ∂l/∂λ = {partial_derivs['dl']} 
+ 
+    Budget Line: {budget_line} = 0   # plug x into budget 
+ 
+    X = {steps["x_in_terms_of_y"]} 
+    Budget Line: {steps["budget_in_y"]} = 0 
+ 
+    Solve for Y: 
+    Y = {round(float(steps["y_value"]), 3)} 
+ 
+    Plug Y in X equation: 
+    X = {steps["x_in_terms_of_y"]} 
+    Y = {round(float(steps["y_value"]), 3)} 
     
-    X = {x_in_terms_of_y}
-    Budget Line: {budget_in_y} = 0
-
-    Solve for Y:
-    Y = {round(float(y_value), 3)}
-    
-    Plug Y in X equation:
-    X = {x_in_terms_of_y}
-    Y = {round(float(y_value), 3)}
-    ∴ X = {round(float(x_value), 3)}   □
-    """)
+    ∴ X = {round(float(steps["x_value"]), 3)}   □ 
+    """).replace("**", "^")
 
 
 if __name__ == '__main__':
-    main()
+    solve_utility_max()
